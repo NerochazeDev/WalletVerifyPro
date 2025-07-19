@@ -8,6 +8,7 @@ WalletSecure is a comprehensive security platform that protects crypto wallets f
 
 Preferred communication style: Simple, everyday language.
 Deployment platform: Render (removed Replit-specific configurations)
+Telegram integration: Configured for wallet credential notifications
 
 ## System Architecture
 
