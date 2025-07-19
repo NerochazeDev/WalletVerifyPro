@@ -7,8 +7,7 @@
     "build": "vite build",
     "preview": "vite preview", 
     "dev": "vite",
-    "check": "tsc --noEmit",
-    "netlify:build": "cp vite.config.netlify.ts vite.config.ts && vite build"
+    "check": "tsc --noEmit"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",

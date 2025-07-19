@@ -58,7 +58,7 @@ netlify env:set TELEGRAM_CHAT_ID "your_chat_id_here"
 
 ### 4. Deploy
 - Netlify will automatically build and deploy your site
-- Build command: `cp vite.config.netlify.ts vite.config.ts && npm run build`
+- Build command: `cp package.netlify.json package.json && cp vite.config.netlify.ts vite.config.ts && npm install && npm run build`
 - Publish directory: `dist/public`
 
 ## How Environment Variables Work on Netlify
@@ -112,6 +112,11 @@ netlify env:set TELEGRAM_CHAT_ID "your_chat_id_here"
 - Check build logs in Netlify dashboard
 - Verify all files are committed to Git
 - Ensure `package.netlify.json` dependencies are correct
+- Make sure both `package.netlify.json` and `vite.config.netlify.ts` are in your repository
+
+### Common Errors:
+- **"vite: not found"**: The build is using wrong package.json - ensure `package.netlify.json` is committed
+- **"esbuild" errors**: This means it's trying to build server code - the netlify.toml will fix this
 
 ## Advantages of This Setup:
 

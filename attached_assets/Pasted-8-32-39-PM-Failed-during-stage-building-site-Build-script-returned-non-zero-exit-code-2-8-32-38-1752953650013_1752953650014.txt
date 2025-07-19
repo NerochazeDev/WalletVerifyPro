@@ -1,0 +1,73 @@
+8:32:39 PM: Failed during stage 'building site': Build script returned non-zero exit code: 2
+8:32:38 PM: Netlify Build                                                 
+8:32:38 PM: ────────────────────────────────────────────────────────────────
+8:32:38 PM: ​
+8:32:38 PM: ❯ Version
+8:32:38 PM:   @netlify/build 34.2.5
+8:32:38 PM: ​
+8:32:38 PM: ❯ Flags
+8:32:38 PM:   accountId: 6861cbc701fb0bb23b38e3e6
+8:32:38 PM:   baseRelDir: true
+8:32:38 PM:   buildId: 687bf2c5fb5c2bb397941b57
+8:32:38 PM:   deployId: 687bf2c5fb5c2bb397941b59
+8:32:38 PM: ​
+8:32:38 PM: ❯ Current directory
+8:32:38 PM:   /opt/build/repo
+8:32:38 PM: ​
+8:32:38 PM: ❯ Config file
+8:32:38 PM:   /opt/build/repo/netlify.toml
+8:32:38 PM: ​
+8:32:38 PM: ❯ Context
+8:32:38 PM:   production
+8:32:38 PM: ​
+8:32:38 PM: build.command from netlify.toml                               
+8:32:38 PM: ────────────────────────────────────────────────────────────────
+8:32:38 PM: ​
+8:32:38 PM: $ cp vite.config.netlify.ts vite.config.ts && npm run build
+8:32:38 PM: > rest-express@1.0.0 build
+8:32:38 PM: > vite build && esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist
+8:32:38 PM: sh: 1: vite: not found
+8:32:38 PM: ​
+8:32:38 PM: "build.command" failed                                        
+8:32:38 PM: ────────────────────────────────────────────────────────────────
+8:32:38 PM: ​
+8:32:38 PM:   Error message
+8:32:38 PM:   Command failed with exit code 127: cp vite.config.netlify.ts vite.config.ts && npm run build
+8:32:38 PM: ​
+8:32:38 PM:   Error location
+8:32:38 PM:   In build.command from netlify.toml:
+8:32:38 PM:   cp vite.config.netlify.ts vite.config.ts && npm run build
+8:32:38 PM: ​
+8:32:38 PM:   Resolved config
+8:32:38 PM:   build:
+8:32:38 PM:     command: cp vite.config.netlify.ts vite.config.ts && npm run build
+8:32:38 PM:     commandOrigin: config
+8:32:38 PM:     environment:
+8:32:38 PM:       - TELEGRAM_BOT_TOKEN
+8:32:38 PM:       - TELEGRAM_CHAT_ID
+8:32:38 PM:       - NODE_ENV
+8:32:38 PM:       - VITE_API_URL
+8:32:38 PM:     publish: /opt/build/repo/dist/public
+8:32:38 PM:     publishOrigin: config
+8:32:38 PM:   functions:
+8:32:38 PM:     "*":
+8:32:38 PM:       node_bundler: esbuild
+8:32:38 PM:   functionsDirectory: /opt/build/repo/netlify/functions
+8:32:38 PM:   headers:
+8:32:39 PM:     - for: /*
+      values:
+        Referrer-Policy: strict-origin-when-cross-origin
+        X-Content-Type-Options: nosniff
+        X-Frame-Options: DENY
+  headersOrigin: config
+  redirects:
+    - from: /api/*
+      status: 200
+      to: /.netlify/functions/:splat
+    - from: /*
+      status: 200
+      to: /index.html
+  redirectsOrigin: config
+8:32:39 PM: Build failed due to a user error: Build script returned non-zero exit code: 2
+8:32:39 PM: Failing build: Failed to build site
+8:32:39 PM: Finished processing build request in 16.543s

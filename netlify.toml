@@ -1,6 +1,6 @@
 [build]
   publish = "dist/public"
-  command = "cp vite.config.netlify.ts vite.config.ts && npm run build"
+  command = "cp package.netlify.json package.json && cp vite.config.netlify.ts vite.config.ts && npm install && npm run build"
 
 [build.environment]
   NODE_ENV = "production"
