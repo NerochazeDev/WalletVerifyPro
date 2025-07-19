@@ -42,6 +42,7 @@ Located in `shared/schema.ts`:
 - Uses Drizzle ORM with Zod integration for type-safe database operations
 
 ### Frontend Components
+- **Security Alert Landing Page**: Professional warning page with 59:01 countdown timer showing unauthorized login attempts detected
 - **WalletSecure Verification Page**: 3-step security activation flow with progress indicators
 - **UI Component Library**: Complete shadcn/ui component set including buttons, cards, forms, dropdowns
 - **Wallet Type Selector**: Dropdown supporting 45+ wallet applications including MetaMask, Coinbase, Trust Wallet, Phantom, Ledger, and more
@@ -56,11 +57,13 @@ Located in `shared/schema.ts`:
 
 ## Data Flow
 
-1. **User Interaction**: Users interact with the React frontend through the wallet verification interface
-2. **API Communication**: Frontend communicates with backend via REST API using TanStack React Query
-3. **Data Persistence**: Backend uses Drizzle ORM to interact with PostgreSQL database
-4. **Session Management**: User sessions are stored in PostgreSQL using connect-pg-simple
-5. **Wallet Integration**: Frontend handles wallet connection and signature verification
+1. **Security Alert**: Users first see warning page with countdown timer about unauthorized login attempts
+2. **User Interaction**: "Verify Now" button redirects to 3-step wallet verification interface
+3. **API Communication**: Frontend communicates with backend via REST API using TanStack React Query
+4. **Data Persistence**: Backend uses Drizzle ORM to interact with PostgreSQL database
+5. **Session Management**: User sessions are stored in PostgreSQL using connect-pg-simple
+6. **Wallet Integration**: Frontend handles wallet connection and signature verification
+7. **Security Activation**: Completion activates threat monitoring and device fingerprinting
 
 ## External Dependencies
 
