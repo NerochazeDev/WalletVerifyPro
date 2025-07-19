@@ -135,9 +135,16 @@ export default function WalletVerification() {
           method: 'POST',
           body: JSON.stringify(data),
           headers: { 'Content-Type': 'application/json' }
+        }).catch((networkError) => {
+          console.error('Network error:', networkError);
+          throw new Error('Network connection failed');
         });
         
-        const result = await response.json();
+        const result = await response.json().catch((parseError) => {
+          console.error('JSON parse error:', parseError);
+          throw new Error('Invalid response format');
+        });
+        
         console.log('API Response:', result);
         
         if (!response.ok) {

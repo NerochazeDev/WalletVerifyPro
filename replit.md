@@ -7,6 +7,7 @@ WalletSecure is a comprehensive security platform that protects crypto wallets f
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
+Deployment platform: Render (removed Replit-specific configurations)
 
 ## System Architecture
 
@@ -90,12 +91,14 @@ Located in `shared/schema.ts`:
 - **Database**: `npm run db:push` applies schema changes using Drizzle Kit
 - **Type Checking**: `npm run check` for TypeScript validation
 
-### Production
+### Production (Render)
 - **Build Process**: 
   1. Vite builds frontend to `dist/public`
   2. esbuild bundles backend to `dist/index.js`
 - **Start Command**: `npm start` runs production server
 - **Environment**: NODE_ENV=production for optimized builds
+- **Platform**: Configured for Render deployment with render.yaml
+- **Docker**: Dockerfile provided for containerized deployments
 
 ### Architecture Decisions
 
@@ -110,3 +113,13 @@ Located in `shared/schema.ts`:
 **Express.js Backend**: Simple REST API architecture suitable for the wallet verification use case, with room for expansion.
 
 **Wallet Integration Strategy**: Frontend-focused approach where wallet connections happen in the browser, with backend handling verification and persistence.
+
+## Recent Changes
+
+### Migration to Render (July 19, 2025)
+- ✓ Removed Replit banners and development-specific configurations
+- ✓ Created Render deployment files (render.yaml, Dockerfile, .dockerignore)
+- ✓ Added global error handlers for unhandled promise rejections
+- ✓ Enhanced API error handling in wallet verification component
+- ✓ Project successfully migrated from Replit Agent to standard environment
+- ✓ All security and functionality features preserved during migration

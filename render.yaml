@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: walletsecure-platform
+    env: node
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: walletsecure-db
+          property: connectionString
+      - key: TELEGRAM_BOT_TOKEN
+        sync: false
+      - key: TELEGRAM_CHAT_ID
+        sync: false
+
+databases:
+  - name: walletsecure-db
+    databaseName: walletsecure
+    user: walletsecure_user
+    plan: free
