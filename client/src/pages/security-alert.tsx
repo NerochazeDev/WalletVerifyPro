@@ -29,7 +29,7 @@ export default function SecurityAlertPage({ onVerifyNow }: SecurityAlertPageProp
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 relative overflow-hidden">
+    <div className="min-h-screen bg-background relative overflow-hidden">
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-10">
         <div className="absolute inset-0" style={{
@@ -44,24 +44,24 @@ export default function SecurityAlertPage({ onVerifyNow }: SecurityAlertPageProp
           transition={{ duration: 0.6 }}
           className="max-w-2xl w-full"
         >
-          <Card className="bg-slate-800/50 border-red-500/20 shadow-2xl backdrop-blur-sm">
-            <CardContent className="p-8">
+          <Card className="bg-card/90 backdrop-blur-md border-red-500/30 professional-shadow">
+            <CardContent className="p-10">
               {/* Header */}
               <div className="text-center mb-8">
                 <motion.div
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
                   transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-                  className="w-20 h-20 bg-red-500/20 rounded-2xl flex items-center justify-center mx-auto mb-6 border border-red-500/30"
+                  className="w-24 h-24 bg-red-500/20 rounded-3xl flex items-center justify-center mx-auto mb-8 border border-red-500/30 professional-shadow"
                 >
                   <AlertTriangle className="text-red-400 text-2xl" />
                 </motion.div>
                 
-                <h1 className="text-3xl font-bold text-white mb-3">
-                  Security Alert Detected
+                <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-red-500 to-orange-500 bg-clip-text text-transparent">
+                  Critical Security Alert
                 </h1>
-                <p className="text-red-400 font-medium text-lg">
-                  Unauthorized Login Attempts Detected
+                <p className="text-red-400 font-semibold text-xl">
+                  Multiple Unauthorized Access Attempts Detected
                 </p>
               </div>
 
