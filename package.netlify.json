@@ -5,9 +5,10 @@
   "license": "MIT",
   "scripts": {
     "build": "vite build",
-    "preview": "vite preview",
+    "preview": "vite preview", 
     "dev": "vite",
-    "check": "tsc --noEmit"
+    "check": "tsc --noEmit",
+    "netlify:build": "cp vite.config.netlify.ts vite.config.ts && vite build"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",

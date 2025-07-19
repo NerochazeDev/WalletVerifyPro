@@ -1,9 +1,10 @@
 [build]
   publish = "dist/public"
-  command = "npm run build"
+  command = "cp vite.config.netlify.ts vite.config.ts && npm run build"
 
 [build.environment]
   NODE_ENV = "production"
+  VITE_API_URL = "/.netlify/functions"
 
 [[redirects]]
   from = "/api/*"
