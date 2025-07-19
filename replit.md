@@ -1,8 +1,8 @@
-# Wallet Verification Application
+# WalletSecure Platform
 
 ## Overview
 
-This is a full-stack web application built with React + TypeScript frontend and Express.js backend, featuring a wallet verification system. The application uses a modern tech stack with shadcn/ui components, Tailwind CSS, and Drizzle ORM for database interactions.
+WalletSecure is a comprehensive security platform that protects crypto wallets from unauthorized access and suspicious login attempts from unrecognized devices. Built with React + TypeScript frontend and Express.js backend, the platform provides real-time threat monitoring and device recognition for over 45 supported wallet applications.
 
 ## User Preferences
 
@@ -37,14 +37,16 @@ Preferred communication style: Simple, everyday language.
 ### Database Schema
 Located in `shared/schema.ts`:
 - **users**: Basic user authentication with username/password
-- **wallet_verifications**: Stores wallet verification data including address, type, signature, and verification status
+- **wallet_verifications**: Stores wallet verification data including address, type, signature, and verification status for 45+ supported wallet applications
+- **security_sessions**: Tracks device fingerprints and login attempts for threat monitoring
 - Uses Drizzle ORM with Zod integration for type-safe database operations
 
 ### Frontend Components
-- **Wallet Verification Page**: Multi-step verification flow with progress indicators
+- **WalletSecure Verification Page**: 3-step security activation flow with progress indicators
 - **UI Component Library**: Complete shadcn/ui component set including buttons, cards, forms, dropdowns
-- **Wallet Dropdown**: Custom component for selecting wallet types (MetaMask, Coinbase, WalletConnect, etc.)
-- **Progress Indicator**: Custom component for showing verification step progress
+- **Wallet Type Selector**: Dropdown supporting 45+ wallet applications including MetaMask, Coinbase, Trust Wallet, Phantom, Ledger, and more
+- **Security Credential Input**: Secure forms for seed phrase and private key verification with encryption notices
+- **Progress Indicator**: Custom component for showing security activation progress
 
 ### Backend Services
 - **Storage Interface**: Abstracted storage layer with in-memory implementation for development
